@@ -74,7 +74,11 @@ operators = {
     "+" : operator.add,
     "-" : operator.sub,
     "*" : operator.mul,
-    "/" : operator.truediv
+    "/" : operator.truediv,
+    ">>" : operator.rshift,
+    "<<" : operator.lshift,
+    "%" : operator.mod,
+    "**" : operator.pow
 }
 
 
@@ -93,18 +97,14 @@ def get_user_input():
         
         number1 = float(input("Enter First Number: "))
         number2 = float(input("Enter Second Number: "))
-        function = input("Enter Operator (+, -, *, /): ")
+        function = input("Enter Operator (+, -, *, /, >>, <<, %, **): ")
         
         # Check for invalid operator - NEW LOGIC ADDED
         if function not in operators:
             print(f"Invalid Operator '{function}' --> Program exiting.")
             return (None, None, None)
-            
         
         return (number1, number2, function)
-        # NOTE - Use "pass" statements to allow code to be run without having to 
-        # NOTE - fill out the contents.  This pass statement should be removed    
-        #pass
         
         # NOTE - User input is generally returned as a string and must be translated.
     except:
@@ -144,9 +144,21 @@ if __name__ == "__main__":
                 print("Invalid number or function")
                 break
             
-            function = operators[func]
+            try:
+            # Check if the operation requires integers (bitwise operators for << and >>)
+            if func_str in INTEGER_OPERATORS:
+                # Convert the floats to integers for bitwise and modulo operations
+                a = int(num1)
+                b = int(num2)
+            else:
+                a = num1
+                b = num2
+                
+            # Look up the function and execute the operation
+            op_function = operators[func_str]
+            result = op_function(a, b)
             
-            print(function(num1, num2))
+            print(f"Result: {result}")
             
     except:
         print("Error in Operator")
