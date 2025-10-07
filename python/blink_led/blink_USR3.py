@@ -32,12 +32,15 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
 THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------
+"""
 
 # Note 5Hz = 0.2 secs
 
 #import pytest
 import os
 import errno
+import Adafruit_BBIO.GPIO as GPIO
+import time
 
 # Set the 3rd LED as the one to blink
 led = "USR3"
@@ -45,45 +48,26 @@ led = "USR3"
 # 5Hz or 5 full on/off cycles means each cycle is 0.2s and the LED is on for 0.1s
 DELAY = 0.1
 
-import Adafruit_BBIO.GPIO as GPIO
+# Setting USR3 as the output LED
+GPIO.setup(led, GPIO.OUT)
 
-def teardown_module(module):
-    GPIO.cleanup()
 
-class TestLED:
-    def set_brightness(self, state, led, name):
-        GPIO.setup(led, GPIO.OUT)
-        GPIO.output(led, state)
-        prefix = "/sys/class/leds/beaglebone:green:{0}/brightness"
-        path = prefix.format(led.lower())
-        value = self.read_led_file(path)
-        if value == "":
-            path = prefix.format(name)
-            value = self.read_led_file(path)
-        if state == 1:
-            assert int(value) > 0
-        else:
-            assert int(value) == 0
-
-    def read_led_file(self, path):
-        try:
-            return open(path).read()
-        except (IOError, e):
-            if e.errno == errno.ENOENT:
-                return ""
-
-    def set_all_leds(self, state):
-        test_leds = { "USR0": "heartbeat", \
-                      "USR1": "mmc0", \
-                      "USR2": "cpu0", \
-                      "USR3": "mmc1" }
-        for led, name in test_leds.items():
-            self.set_brightness(state, led, name)
-            GPIO.cleanup()
-   
-    def test_brightness_high(self):
-        self.set_all_leds(GPIO.HIGH)
-
-    def test_brightness_low(self):
-        self.set_all_leds(GPIO.LOW)
-
+try: 
+    while True:
+        # Turns on the LED
+        GPIO.output(led, GPIO.HIGH)
+        
+        # Waits for time delay
+        time.sleep(DELAY)
+        
+        # Turns off LED 
+        GPIO.output(led, GPIO.LOW)
+        
+        # Waits for time delay
+        time.sleep(DELAY)
+        
+finally: 
+    #print("\nCleaning up GPIO pins")
+    GPIO.cleanup
+    
+    
