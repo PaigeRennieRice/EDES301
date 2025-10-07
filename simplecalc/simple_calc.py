@@ -62,6 +62,17 @@ import operator
 
 # NOTE - No constants are needed for this example 
 
+
+import sys # Checks the python version
+
+# Choose input vs raw_input based on the python version
+if sys.version_info[0] < 3:
+    # Python 2: raw_input() is used instead of input()
+    get_input_fn = raw_input
+else:
+    # Python 3: input() is used
+    get_input_fn = input
+
 # ------------------------------------------------------------------------
 # Global variables
 # ------------------------------------------------------------------------
@@ -95,9 +106,9 @@ def get_user_input():
     # NOTE - Use "try"/"except" statements to allow code to handle errors gracefully.      
     try:
         
-        number1 = float(input("Enter First Number: "))
-        number2 = float(input("Enter Second Number: "))
-        function = input("Enter Operator (+, -, *, /, >>, <<, %, **): ")
+        number1 = float(get_input_fn("Enter First Number: "))
+        number2 = float(get_input_fn("Enter Second Number: "))
+        function = get_input_fn("Enter Operator (+, -, *, /, >>, <<, %, **): ")
         
         # Check for invalid operator - NEW LOGIC ADDED
         if function not in operators:
@@ -136,18 +147,17 @@ if __name__ == "__main__":
     # NOTE -   - Check that all inputs are valid (exit the program if inputs invalid)
     # NOTE -   - Execute the function on the numbers and print the results
     
-    try: 
-        while(True):
-            num1, num2, func = get_user_input()
+    while(True):
+        num1, num2, func = get_user_input()
             
-            if (num1 is None) or (num2 is None) or (func is None):
-                print("Invalid number or function")
-                break
+        if (num1 is None) or (num2 is None) or (func is None):
+            print("Invalid number or function")
+            break
             
-            try:
-            # Check if the operation requires integers (bitwise operators for << and >>)
-            if func_str in INTEGER_OPERATORS:
-                # Convert the floats to integers for bitwise and modulo operations
+        try:
+        # Check if the operation requires integers (bitwise operators for << and >>)
+            if func in INTEGER_OPERATORS:
+            # Convert the floats to integers for bitwise and modulo operations
                 a = int(num1)
                 b = int(num2)
             else:
@@ -155,11 +165,11 @@ if __name__ == "__main__":
                 b = num2
                 
             # Look up the function and execute the operation
-            op_function = operators[func_str]
+            op_function = operators[func]
             result = op_function(a, b)
             
             print(f"Result: {result}")
             
-    except:
-        print("Error in Operator")
+        except:
+            print("Error in Operator")
             
