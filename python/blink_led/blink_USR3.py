@@ -67,7 +67,7 @@ try:
         time.sleep(DELAY)
         
 finally: 
-    #print("\nCleaning up GPIO pins")
+    # Reset the GPIO pins back to default mode
     GPIO.cleanup
     
-    
+# Control c to stop the blinking!
