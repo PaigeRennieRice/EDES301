@@ -136,11 +136,14 @@ class CombinationLock():
                - Set servo to closed
         """
         if self.debug:
-            print("lock()")
+            print("lock()") # true or false
         
         # Set LEDs
+        self.red_led.on()
+        self.green_led.off()
 
         # Set servo to "locked"
+        self.servo.turn(SERVO_LOCK)
 
     # End def
 
@@ -155,10 +158,14 @@ class CombinationLock():
             print("unlock()")
             
         # Set LEDs
+        self.red_led.off()
+        self.green_led.on()
 
         # Set servo to "unlocked"
+        self.servo.turn(SERVO_UNLOCK)
 
         # Set display to dash
+        self.set_display_dash()
 
     # End def
 
@@ -282,6 +289,7 @@ class CombinationLock():
 
     # End def
 
+# helper functions
 
     def set_display_prog(self):
         """Set display to word "Prog" """
