@@ -1,1 +1,18 @@
 <Adjustable Pomodoro Timer>
+
+Hackster page includes build and user instructions
+https://www.hackster.io/paige-rennie/edes-301-pomodoro-timer-723d7a
+
+It has been proven that if you study or do homework for shorter amounts of time with small breaks instead of trying to power through for hours in a row, you end up being able to concentrate for longer in the long term!
+
+I can use my phone or laptop to do this, but not having it displayed in front of me isn’t helpful. Also, sometimes I just need my phone to be away from me (out of sight, out of mind!) so having it on a device that isn’t attached to my phone would be helpful! So that's how I decided to make this Pomodoro Study timer in physical form inspired by the actual website version called Pomofocus.
+
+project_01.py is the main code that controls the LEDs, buzzer and display based on user input from the potentiometer and buttons. 
+
+This project imports code from button.py, buzzer.py, potentiometer.py, led.py, ht16k33.py to run the main code.
+
+Additionally, there is a run script that imports these codes scripts. The configure_pins.sh sets the pins to be pwm, i2c or pwm.
+
+! ! ! 
+To run this code, use sudo ./run and this will run the 'run' code which includes project_01.py and configure_pins.sh.
+! ! ! 
