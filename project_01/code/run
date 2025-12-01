@@ -44,7 +44,7 @@ dirs=(
     '/var/lib/cloud9/EDES301/python/button:'
     '/var/lib/cloud9/EDES301/python/led:'
     '/var/lib/cloud9/EDES301/python/potentiometer:'
-    '/var/lib/cloud9/EDES301/python/buzzer:' 
+    '/var/lib/cloud9/EDES301/python/buzzer:' )
 
 PYTHONPATH=$(IFS=; echo "${dirs[*]}") python3 project_01.py
 
