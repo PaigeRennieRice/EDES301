@@ -1,9 +1,9 @@
 #!/bin/bash
 # --------------------------------------------------------------------------
-# Combination Lock - Configure Pins
+# Pomodoro Timer - Run Script
 # --------------------------------------------------------------------------
 # License:   
-# Copyright 2020 Paige Rennie
+# Copyright 2025 Paige Rennie
 # 
 # Redistribution and use in source and binary forms, with or without 
 # modification, are permitted provided that the following conditions are met:
@@ -31,27 +31,22 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # --------------------------------------------------------------------------
 # 
-# Configure pins for Combination Lock:
-#   - I2C1
-#   - Button
-#   - LEDs (Red / Green)
-#   - Servo
+# Run Combination Lock in /var/lib/cloud9/EDES301/project_01/code
 # 
 # --------------------------------------------------------------------------
 
-# I2C1
-config-pin P2_09 i2c
-config-pin P2_11 i2c
+cd /var/lib/cloud9/EDES301/project_01/code
 
-# Button
-config-pin P2_02 gpio
+./configure_pins.sh
 
-# LEDs
-config-pin P2_04 gpio
-config-pin P2_06 gpio
+dirs=(
+    '/var/lib/cloud9/EDES301/python/ht16k33:'
+    '/var/lib/cloud9/EDES301/python/button:'
+    '/var/lib/cloud9/EDES301/python/led:'
+    '/var/lib/cloud9/EDES301/python/potentiometer:'
+    '/var/lib/cloud9/EDES301/python/buzzer:' 
 
-# Servo
-config-pin P1_36 pwm
+PYTHONPATH=$(IFS=; echo "${dirs[*]}") python3 project_01.py
 
-# Buzzer 
-config-pin P2_01 pwm
+
+

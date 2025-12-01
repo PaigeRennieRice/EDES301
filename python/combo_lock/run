@@ -44,7 +44,8 @@ dirs=(
     '/var/lib/cloud9/EDES301/python/servo:'
     '/var/lib/cloud9/EDES301/python/button:'
     '/var/lib/cloud9/EDES301/python/led:'
-    '/var/lib/cloud9/EDES301/python/potentiometer'
+    '/var/lib/cloud9/EDES301/python/potentiometer:'
+    '/var/lib/cloud9/EDES301/python/buzzer:' # add semi colon after if you want to use
 )
 
 PYTHONPATH=$(IFS=; echo "${dirs[*]}") python3 combo_lock.py

@@ -127,7 +127,7 @@ class LED():
         GPIO.output(self.pin, self.on_value)
 
         # !!! NEED TO IMPLEMENT !!! #
-        print("Turning LED ON")
+        #print("Turning LED ON")
         # !!! NEED TO IMPLEMENT !!! #
     
     # End def
@@ -140,7 +140,7 @@ class LED():
 
 
         # !!! NEED TO IMPLEMENT !!! #
-        print("Turning LED OFF")
+        #print("Turning LED OFF")
         # !!! NEED TO IMPLEMENT !!! #
     
     # End def

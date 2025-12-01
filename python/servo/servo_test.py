@@ -1,9 +1,9 @@
 """
 --------------------------------------------------------------------------
-Potentiometer Driver
+Servo Driver
 --------------------------------------------------------------------------
 License:   
-Copyright 2025 Paige Rennie
+Copyright 2021-2025 - <NAME>
 
 Redistribution and use in source and binary forms, with or without 
 modification, are permitted provided that the following conditions are met:
@@ -31,99 +31,106 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------
 
-Potentiometer Driver for PocketBeagle
+SG90 Servo Driver
 
-Software API:
-
-  Potentiometer(pin)
-    - Provide PocketBeagle pin that the potentiometer is connected
-
-  get_value()
-    - Returns the raw ADC value.  Integer in [0, 4095] 
-
-  get_voltage()
-    - Returns the approximate voltage of the pin in volts
+API:
+  Servo(pin)
+    - Provide pin that the Servo is connected
+  
+    turn(percentage)
+      -   0 = Fully clockwise
+      - 100 = Fully anti-clockwise
 
 """
-import Adafruit_BBIO.ADC as ADC
+import Adafruit_BBIO.PWM as PWM
 
 # ------------------------------------------------------------------------
 # Constants
 # ------------------------------------------------------------------------
 
-MIN_VALUE     = 0
-MAX_VALUE     = 4095
+SG90_FREQ               = 50                  # 20ms period (50Hz)
+SG90_POL                = 0                   # Rising Edge polarity
+SG90_MIN_DUTY           = 5                   # 1ms pulse (5% duty cycle)  -- Fully clockwise (right)
+SG90_MAX_DUTY           = 10                  # 2ms pulse (10% duty cycle) -- Fully anti-clockwise (left)
 
 # ------------------------------------------------------------------------
 # Global variables
 # ------------------------------------------------------------------------
 
-PINS_3V6 = ["P1_2", "P2_35"]
-PINS_1V8 = ["P1_19", "P1_21", "P1_23", "P1_25", "P1_27", "P2_36"]
+# None
 
 # ------------------------------------------------------------------------
 # Functions / Classes
 # ------------------------------------------------------------------------
 
-class Potentiometer():
-    """ Button Class """
-    pin             = None
-    voltage         = None
+class Servo():
+    """ CombinationLock """
+    pin       = None
+    position  = None
     
-    def __init__(self, pin=None, voltage=1.8):
-        """ Initialize variables and set up the potentiometer """
+    def __init__(self, pin=None, default_position=0):
+        """ Initialize variables and set up the Servo """
         if (pin == None):
-            raise ValueError("Pin not provided for Potentiometer()")
+            raise ValueError("Pin not provided for Servo()")
         else:
             self.pin = pin
-            
-        if pin in PINS_3V6:
-            self.voltage = 3.6
-        else:
-            self.voltage = 1.8
-            
-            if pin not in PINS_1V8:
-                print("WARNING:  Unknown pin {0}.  Setting voltage to 1.8V.".format(pin))
+
+        self.position = default_position
         
-        # Initialize the hardware components        
-        self._setup()
+        self._setup(default_position)
     
     # End def
     
     
-    def _setup(self):
-        """ Setup the hardware components. """
-        # Initialize Analog Input
-        ADC.setup()
-
+    def _setup(self, default_position):
+        """Setup the hardware components."""
+        # Initialize Servo; Servo should be in "default position"
+        
+        # !!! NEED TO IMPLEMENT !!! #
+        pass 
+        # !!! NEED TO IMPLEMENT !!! #
+        
     # End def
 
-
-    def get_value(self):
-        """ Get the value of the Potentiometer
+    
+    def _duty_cycle_from_position(self, position):
+        """ Return the duty cycle to set the provided position """
+        return ((SG90_MAX_DUTY - SG90_MIN_DUTY) * (position / 100)) + SG90_MIN_DUTY    
         
-           Returns:  Integer in [0, 4095]
+    # End def
+    
+    
+    def get_position(self):
+        """ Return the position of the servo """
+        return self.position
+    
+    # End def
+    
+
+    def turn(self, position):
+        """ Turn Servo to the desired position based on percentage of motion range
+        
+              0% = Fully clockwise (right)
+            100% = Fully anti-clockwise (left)      
         """
-        # Read raw value from ADC
-        return int(ADC.read_raw(self.pin))
+        # Record the current position
+        self.position = position
+        
+        # Set PWM duty cycle based on position
+        duty_cycle = self._duty_cycle_from_position(position)
+        
+        # !!! NEED TO IMPLEMENT !!! #
+        print("Turning servo to position {0} using duty cycle {1}".format(position, duty_cycle))
+        # !!! NEED TO IMPLEMENT !!! #
 
     # End def
 
-    
-    def get_voltage(self):
-        """ Get the voltage of the pin
-        
-           Returns:  Float in volts
-        """
-        return ((self.get_value() / MAX_VALUE) * self.voltage)
-    
-    # End def    
-    
-    
+
     def cleanup(self):
         """Cleanup the hardware components."""
-        # Nothing to do for ADC
-        pass        
+        # Stop servo
+        PWM.stop(self.pin)
+        PWM.cleanup()
         
     # End def
 
@@ -137,24 +144,31 @@ class Potentiometer():
 
 if __name__ == '__main__':
     import time
+    
+    print("Servo Test")
 
-    print("Potentiometer Test")
-
-    # Create instantiation of the potentiometer
-    pot = Potentiometer("P1_19")
+    # Create instantiation of the servo
+    servo = Servo("P2_1")
 
     # Use a Keyboard Interrupt (i.e. "Ctrl-C") to exit the test
     print("Use Ctrl-C to Exit")
     
     try:
         while(1):
-            # Print potentiometer value
-            print("Value   = {0}".format(pot.get_value()))
-            print("Voltage = {0} V".format(pot.get_voltage()))
+            # Turn Servo anti-clockwise
+            servo.turn(0)
+            print("Current position = {0}%".format(servo.get_position()))
+            time.sleep(1)
+        
+            servo.turn(100)
+            print("Current position = {0}%".format(servo.get_position()))
             time.sleep(1)
         
     except KeyboardInterrupt:
         pass
+
+    # Clean up hardware when exiting
+    servo.cleanup()
 
     print("Test Complete")
 

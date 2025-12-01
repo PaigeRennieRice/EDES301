@@ -302,7 +302,7 @@ class HT16K33():
         self.set_digit(0, (value // 1000) % 10)
 
         # Modify code to implement this function
-        print("Set value = {0}".format(value)) # Remove when updating code
+        # # # # print("Set value = {0}".format(value)) # Remove when updating code
 
     # End def
     

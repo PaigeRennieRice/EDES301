@@ -3,7 +3,7 @@
 Combination Lock
 --------------------------------------------------------------------------
 License:   
-Copyright 2025 <NAME>
+Copyright 2022 Erik Welsh
 
 Redistribution and use in source and binary forms, with or without 
 modification, are permitted provided that the following conditions are met:
@@ -67,7 +67,6 @@ import button        as BUTTON
 import potentiometer as POT
 import servo         as SERVO
 import led           as LED
-import buzzer_music  as MUSIC
 
 # ------------------------------------------------------------------------
 # Constants
@@ -76,7 +75,7 @@ import buzzer_music  as MUSIC
 SERVO_LOCK         = 100     # Fully anti-clockwise
 SERVO_UNLOCK       = 0       # Fully clockwise
 
-POT_DIVIDER        = 32       # Divider used to help reduce potentiometer granularity
+POT_DIVIDER        = 8       # Divider used to help reduce potentiometer granularity
 
 # ------------------------------------------------------------------------
 # Global variables
@@ -97,13 +96,12 @@ class CombinationLock():
     potentiometer  = None
     servo          = None
     display        = None
-    music          = None
     debug          = None
     
     def __init__(self, reset_time=2.0, button="P2_2", 
                        red_led="P2_6", green_led="P2_4",
                        potentiometer="P1_19", servo="P1_36", 
-                       i2c_bus=1, i2c_address=0x70, buzzer='P2_1', debug=False):
+                       i2c_bus=1, i2c_address=0x70, debug=False):
         """ Initialize variables and set up display """
 
         self.reset_time     = reset_time
@@ -113,7 +111,6 @@ class CombinationLock():
         self.potentiometer  = POT.Potentiometer(potentiometer)
         self.servo          = SERVO.Servo(servo, default_position=SERVO_LOCK)
         self.display        = HT16K33.HT16K33(i2c_bus, i2c_address)
-        # # # # # self.music          = MUSIC.BuzzerMusic(buzzer)
         self.debug          = debug
         
         self._setup()
@@ -139,7 +136,7 @@ class CombinationLock():
                - Set servo to closed
         """
         if self.debug:
-            print("lock()") # true or false
+            print("lock()")
         
         # Set LEDs
         self.red_led.on()
@@ -169,9 +166,6 @@ class CombinationLock():
 
         # Set display to dash
         self.set_display_dash()
-        
-        # Play music on the buzzer 
-        # # # # # self.music.play_song_from_list(1)
 
     # End def
 
@@ -190,9 +184,7 @@ class CombinationLock():
         value = self.potentiometer.get_value()
 
         # Divide value by POT_DIVIDER
-        value = value // POT_DIVIDER
-        
-        # print(value)
+        value = int(value // POT_DIVIDER)
 
         # Update display (must be an integer)
         self.display.update(value)
@@ -221,17 +213,17 @@ class CombinationLock():
             # Wait for button press (do nothing)
             self.button.wait_for_press()
             
-            # Set button unpressed callback function
+            # Set button callback function
             self.button.set_unpressed_callback(self.show_analog_value)
 
             # Wait for button press (show analog value)
             self.button.wait_for_press()
             
-            # Get callback function value from button
+            # Get function value
             value = self.button.get_unpressed_callback_value()
             
-            # Remove button unpressed callback function
-            self.button.set_unpressed_callback(None)
+            # Remove button callback function
+            self.button.set_unpressed_callback(None)            
 
             # Record Analog value
             combination[i] = value
@@ -297,7 +289,6 @@ class CombinationLock():
                 if self.debug:
                     
                     print("Combination Passed")
-                    
                 # Unlock the lock
                 self.unlock()
 
@@ -305,19 +296,16 @@ class CombinationLock():
                 self.button.wait_for_press()
                 
                 # Get press duration
-                duration = self.button.get_last_press_duration()
+                button_press_time = self.button.get_last_press_duration()
                 
                 # If greater than reset_time, program lock, else lock the lock
-                if (duration > self.reset_time):
+                if (button_press_time > self.reset_time):
                     program = True
-                else: 
+                else:
                     self.lock()
-            
-            time.sleep(1)
 
     # End def
 
-# helper functions
 
     def set_display_prog(self):
         """Set display to word "Prog" """

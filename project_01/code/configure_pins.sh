@@ -1,9 +1,9 @@
 #!/bin/bash
 # --------------------------------------------------------------------------
-# Combination Lock - Configure Pins
+# Pomodoro Timer - Configure Pins
 # --------------------------------------------------------------------------
 # License:   
-# Copyright 2020 Paige Rennie
+# Copyright 2025 Paige Rennie
 # 
 # Redistribution and use in source and binary forms, with or without 
 # modification, are permitted provided that the following conditions are met:
@@ -31,11 +31,10 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # --------------------------------------------------------------------------
 # 
-# Configure pins for Combination Lock:
+# Configure pins for Pomodoro Timer:
 #   - I2C1
-#   - Button
-#   - LEDs (Red / Green)
-#   - Servo
+#   - Buttons
+#   - LEDs
 # 
 # --------------------------------------------------------------------------
 
@@ -44,14 +43,21 @@ config-pin P2_09 i2c
 config-pin P2_11 i2c
 
 # Button
-config-pin P2_02 gpio
+config-pin P2_02 gpio # blue
+config-pin P2_03 gpio # green
 
 # LEDs
-config-pin P2_04 gpio
-config-pin P2_06 gpio
+config-pin P2_04 gpio # blue
+config-pin P2_06 gpio # red
+config-pin P2_08 gpio # white
 
-# Servo
-config-pin P1_36 pwm
+config-pin P2_27 gpio # pomodoro led 1
+config-pin P2_29 gpio # pomodoro led 2
+config-pin P2_31 gpio # pomodoro led 3
+config-pin P2_33 gpio # pomodoro led 4
 
 # Buzzer 
 config-pin P2_01 pwm
+
+# Pot
+# config-pin P1_19 analog_in
